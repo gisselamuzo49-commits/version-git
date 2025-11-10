@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Image Cards and a Table</title>
+
+    <style>
+        /* ======== ESTILOS GENERALES ======== */
+        body {
+            font-family: Arial, sans-serif; /* Define la fuente del texto */
+            margin: 40px; /* Espaciado exterior del contenido */
+            background-color: #f4f4f4; /* Color de fondo general */
+        }
+
+        /* ======== CONTENEDOR DE LAS TARJETAS ======== */
+        .card-container {
+            display: flex; /* Coloca las tarjetas en una fila */
+            justify-content: center; /* Centra las tarjetas horizontalmente */
+            align-items: stretch; /* Hace que ambas tengan la misma altura */
+            gap: 0; /* No deja espacio entre tarjetas */
+            margin-bottom: 30px; /* Deja espacio debajo del grupo de tarjetas */
+        }
+
+        /* ======== TARJETAS ======== */
+        .card {
+            background-color: white; /* Fondo blanco */
+            border: 1px solid #ccc; /* Borde gris claro */
+            width: 250px; /* Ancho fijo de cada tarjeta */
+            text-align: center; /* Centra el contenido */
+            overflow: hidden; /* Oculta contenido que se salga del borde */
+            display: flex;
+            flex-direction: column; /* Organiza el contenido verticalmente */
+            justify-content: space-between; /* Espacia imagen y botón */
+        }
+
+        /* Tarjeta izquierda: bordes redondeados solo en la izquierda */
+        .card:first-child {
+            border-radius: 10px 0 0 10px;
+            border-right: none; /* Elimina borde derecho para unir ambas tarjetas visualmente */
+        }
+
+        /* Tarjeta derecha: bordes redondeados solo en la derecha */
+        .card:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+
+        /* Imagen dentro de las tarjetas */
+        .card img {
+            width: 100%; /* Ocupa todo el ancho de la tarjeta */
+            height: 200px; /* Altura fija */
+            object-fit: cover; /* Ajusta la imagen sin deformarla */
+        }
+
+        /* Botón dentro de la tarjeta */
+        .card button {
+            background-color: #007BFF; /* Azul principal */
+            color: white; /* Texto blanco */
+            border: none; /* Sin borde */
+            padding: 10px; /* Espaciado interno */
+            margin: 15px; /* Separación del borde */
+            border-radius: 5px; /* Esquinas redondeadas */
+            cursor: pointer; /* Muestra mano al pasar el ratón */
+            font-size: 14px; /* Tamaño del texto */
+            transition: background-color 0.3s ease; /* Animación suave al cambiar color */
+        }
+
+        /* Efecto al pasar el ratón sobre el botón */
+        .card button:hover {
+            background-color: #0056b3; /* Azul más oscuro */
+        }
+
+        /* ======== TABLA ======== */
+        table {
+            width: 100%; /* Ocupa todo el ancho de la página */
+            border-collapse: collapse; /* Combina los bordes en uno solo */
+            background-color: white; /* Fondo blanco */
+        }
+
+        /* Celdas y encabezados */
+        th, td {
+            border: 1px solid #999; /* Borde gris */
+            padding: 10px; /* Espaciado interno */
+            text-align: center; /* Centra el texto */
+        }
+
+        /* Encabezados de tabla */
+        th {
+            background-color: #007BFF; /* Fondo azul */
+            color: white; /* Texto blanco */
+        }
+
+        /* Título de la tabla */
+        caption {
+            caption-side: top; /* Muestra el título arriba */
+            font-weight: bold; /* Texto en negrita */
+            margin-bottom: 10px; /* Espaciado inferior */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======== CONTENEDOR DE TARJETAS ======== -->
+    <div class="card-container">
+        <!-- Primera tarjeta -->
+        <div class="card">
+            <img src="https://img.freepik.com/vector-gratis/coleccion-elementos-halloween_23-2148610809.jpg?semt=ais_hybrid&w=740&q=80" alt="Image 1">
+            <button>View More</button>
+        </div>
+
+        <!-- Segunda tarjeta -->
+        <div class="card">
+            <img src="https://media.istockphoto.com/id/1427555254/es/foto/mesa-de-halloween-tabl%C3%B3n-viejo-de-madera-con-calabaza-naranja-en-paisaje-p%C3%BArpura-con-luz-de.jpg?s=612x612&w=0&k=20&c=UjJsZSzx2LYej_Ei17lUGH3xp4wXfEIhI5c-OMVpQzg=" alt="Image 2">
+            <button>View More</button>
+        </div>
+    </div>
+
+    <!-- ======== TABLA ======== -->
+    <table>
+        <caption>Example Table</caption> <!-- Título superior de la tabla -->
+
+        <!-- Encabezado de la tabla -->
+        <thead>
+            <tr>
+                <th>N°</th> <!-- Columna 1 -->
+                <th>Datos</th>  <!-- Columna 2 -->
+                <th>Datos</th> <!-- Columna 3 -->
+            </tr>
+        </thead>
+
+        <!-- Cuerpo de la tabla -->
+        <tbody id="data">
+            
+        </tbody>
+    </table>
+    <script>
+    let host = window.location.hostname; 
+    let port = '8000'; // 🔹 FastAPI usa este puerto por defecto
+    let url = `http://${host}:${port}/posteos`; // 🔹 Usa backticks correctamente
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => mostrarData(data))
+        .catch(error => console.error("Error al obtener datos:", error));
+
+    const mostrarData = (data) => {
+        console.log(data);
+        let body = '';
+        for (let i = 0; i < data.length; i++) {
+            // 🔹 Usa backticks para construir el HTML dinámico
+            body += `
+                <tr>
+                    <td>${data[i].id}</td>
+                    <td>${data[i].title}</td>
+                    <td>${data[i].body}</td>
+                </tr>
+            `;
+        }
+        document.getElementById('data').innerHTML = body;
+    }
+</script>
+
+
+</body>
+</html>
